@@ -1,0 +1,27 @@
+diff --git a/node_modules/metro/src/Assets.js b/node_modules/metro/src/Assets.js
+--- a/node_modules/metro/src/Assets.js
++++ b/node_modules/metro/src/Assets.js
+@@ -14,7 +14,7 @@ var AssetPaths = _interopRequireWildcard(
+ );
+ var _crypto = _interopRequireDefault(require("crypto"));
+ var _fs = _interopRequireDefault(require("fs"));
+-var _imageSize = _interopRequireDefault(require("image-size"));
++var _imageSize = { default: require("image-size").imageSize };
+ var _path = _interopRequireDefault(require("path"));
+ function _interopRequireDefault(e) {
+   return e && e.__esModule ? e : { default: e };
+@@ -170,7 +170,13 @@ async function getAssetData(
+   const isImageInput = assetInfo.files[0].includes(".zip/")
+     ? _fs.default.readFileSync(assetInfo.files[0])
+     : assetInfo.files[0];
+-  const dimensions = isImage ? (0, _imageSize.default)(isImageInput) : null;
++  const dimensions = isImage
++    ? (0, _imageSize.default)(
++        typeof isImageInput === "string"
++          ? _fs.default.readFileSync(isImageInput)
++          : isImageInput,
++      )
++    : null;
+   const scale = assetInfo.scales[0];
+   const assetData = {
+     __packager_asset: true,

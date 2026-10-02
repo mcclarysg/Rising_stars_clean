@@ -1,0 +1,341 @@
+Build a production-ready backend API for a private co-parenting iOS application.
+
+Tech stack requirements:
+
+Node.js
+
+Express.js
+
+PostgreSQL
+
+JWT authentication
+
+bcrypt password hashing
+
+Role-based access control
+
+Audit logging middleware
+
+Modular architecture
+
+Clean separation of concerns
+
+REST API
+
+Environment variables
+
+Async/await only
+
+No business logic in frontend
+
+Project name: Private CoParent Sync API
+
+This system will support exactly two parent users and optional read-only child accounts.
+
+SYSTEM REQUIREMENTS
+
+Implement the following:
+
+1. PROJECT STRUCTURE
+
+Use this folder structure:
+
+/config
+/models
+/controllers
+/routes
+/middleware
+/services
+/utils
+
+Main entry file: server.js
+
+2. DATABASE TABLES (PostgreSQL)
+
+Generate SQL schema for:
+
+USERS
+
+id (UUID primary key)
+
+email (unique)
+
+password_hash
+
+role (PARENT_PRIMARY, PARENT_SECONDARY, CHILD_READONLY)
+
+created_at
+
+updated_at
+
+CHILDREN
+
+id (UUID)
+
+first_name
+
+last_name
+
+date_of_birth
+
+created_at
+
+BEHAVIOR_CATEGORIES
+
+id (UUID)
+
+child_id (FK)
+
+name
+
+active (boolean)
+
+created_at
+
+BEHAVIOR_ENTRIES
+
+id (UUID)
+
+child_id (FK)
+
+category_id (FK)
+
+status (SMILEY or SAD)
+
+points_awarded (integer)
+
+recorded_by (FK user_id)
+
+recorded_at (timestamp default now)
+
+DOCUMENTS
+
+id (UUID)
+
+child_id (FK)
+
+uploaded_by (FK user_id)
+
+file_url
+
+file_type
+
+created_at
+
+AUDIT_LOG
+
+id (UUID)
+
+user_id
+
+action_type
+
+resource_type
+
+resource_id
+
+timestamp
+
+ip_address
+
+Audit log must be immutable (no delete route allowed).
+
+3. AUTHENTICATION
+
+Implement:
+
+POST /auth/login
+POST /auth/refresh
+POST /auth/logout
+
+Requirements:
+
+Passwords hashed with bcrypt
+
+JWT access token expires in 15 minutes
+
+Refresh token rotation
+
+Tokens stored securely
+
+Middleware to verify JWT
+
+Middleware to check user role
+
+4. BEHAVIOR SYSTEM
+
+Implement:
+
+GET /children
+GET /children/:id
+
+GET /children/:id/categories
+POST /children/:id/categories
+
+POST /children/:id/behavior-entry
+GET /children/:id/behavior-entries
+
+Business rules:
+
+SMILEY = 1 point
+
+SAD = 0 points
+
+Points calculated server-side only
+
+Weekly totals calculated dynamically
+
+No client can modify points directly
+
+Every behavior entry must:
+
+Insert record
+
+Create audit log entry
+
+5. WEEKLY SUMMARY ENDPOINT
+
+GET /children/:id/weekly-summary
+
+This endpoint must:
+
+Aggregate current week behavior entries
+
+Return total points
+
+Calculate rewards:
+5 points = 1 reward
+20 points = bonus reward
+
+Return structured JSON
+
+6. DOCUMENT UPLOAD
+
+Implement:
+
+POST /children/:id/upload-document
+GET /children/:id/documents
+
+Use multer for file uploads.
+
+Store files locally in /uploads for now.
+
+Every upload must generate audit log entry.
+
+7. AUDIT SYSTEM
+
+Create middleware that logs:
+
+Login
+
+Behavior entry creation
+
+Category creation
+
+Document upload
+
+Role changes
+
+Audit log fields:
+
+user_id
+action_type
+resource_type
+resource_id
+timestamp
+ip_address
+
+No route should allow deleting audit logs.
+
+8. SECURITY
+
+Implement:
+
+Helmet
+
+Rate limiting
+
+CORS restricted to configurable origin
+
+Input validation using Joi or Zod
+
+Centralized error handling middleware
+
+Environment variable config for:
+
+JWT secret
+
+Refresh secret
+
+Database URL
+
+Allowed CORS origin
+
+9. AI SUMMARY ENDPOINT (Optional v1 Stub)
+
+Create:
+
+POST /children/:id/generate-weekly-summary
+
+For now:
+
+Pull weekly data
+
+Return mock AI summary text
+
+Structure code so OpenAI API can be plugged in later.
+
+AI must be read-only.
+
+10. CODE QUALITY REQUIREMENTS
+
+Use async/await
+
+No callbacks
+
+Use controllers for logic
+
+Routes should be thin
+
+Use services for business logic
+
+No inline SQL in routes
+
+Clear comments
+
+Production-ready structure
+
+11. OUTPUT FORMAT
+
+Generate:
+
+Full folder structure
+
+All files with code
+
+SQL schema file
+
+Instructions to run locally
+
+.env example file
+
+Package.json dependencies list
+
+Do not generate explanations.
+Only generate project files and setup instructions.
+
+🔷 END OF REPLIT PROMPT
+
+Now listen carefully.
+
+After it generates:
+
+Run npm install
+
+Create a PostgreSQL database
+
+Add .env variables
+
+Test endpoints with Postman before touching iOS
+
+Do not rush into SwiftUI until backend is stable.
